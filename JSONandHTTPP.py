@@ -68,10 +68,12 @@ class BurpExtender(IBurpExtender, ITab):
 
         self.beautifyButton_1 = JButton("JSON2HTTPP", actionPerformed=self.onClick1)
         self.beautifyButton_2 = JButton("HTTPP2JSON", actionPerformed=self.onClick2)
+        self.clearButton = JButton("CLEAR", actionPerformed=self.onClear)
 
         self.buttons = JPanel()
         self.buttons.add(self.beautifyButton_1, BorderLayout.CENTER)
         self.buttons.add(self.beautifyButton_2, BorderLayout.CENTER)
+        self.buttons.add(self.clearButton, BorderLayout.CENTER)
 
         self.mainPanel.add(self.buttons, BorderLayout.SOUTH)
 
@@ -87,7 +89,7 @@ class BurpExtender(IBurpExtender, ITab):
         self._result = []
         # resultDict format: ["aa=bb","cc=ddd"]
         resultDict = self.json2dict(_jsontext)
-        self.dictTextArea.setText("&".join(resultDict))
+        self.dictTextArea.append("&".join(resultDict))
         keyList = set()
         valueList = set()
         for result in resultDict:
@@ -96,8 +98,12 @@ class BurpExtender(IBurpExtender, ITab):
                 keyList.add(key)
             if len(value) > 0:
                 valueList.add(value)
-        self.keyTextArea.setText("\n".join(keyList))
-        self.valueTextArea.setText("\n".join(valueList))
+        self.keyTextArea.append("\n".join(keyList))
+        self.valueTextArea.append("\n".join(valueList))
+
+        self.dictTextArea.append("\n")
+        self.keyTextArea.append("\n")
+        self.valueTextArea.append("\n")
 
     def onClick2(self, event):
         _jsontext = self.jsonTextArea.getText().strip()
@@ -112,9 +118,18 @@ class BurpExtender(IBurpExtender, ITab):
                 keyList.add(args[0])
             if len(args[1]) > 0:
                 valueList.add(args[1])
-        self.dictTextArea.setText(json.dumps(dict(zip(_res[0::2], _res[1::2]))))
-        self.keyTextArea.setText("\n".join(keyList))
-        self.valueTextArea.setText("\n".join(valueList))
+        self.dictTextArea.append(json.dumps(dict(zip(_res[0::2], _res[1::2]))))
+        self.keyTextArea.append("\n".join(keyList))
+        self.valueTextArea.append("\n".join(valueList))
+
+        self.dictTextArea.append("\n")
+        self.keyTextArea.append("\n")
+        self.valueTextArea.append("\n")
+
+    def onClear(self, event):
+        self.dictTextArea.setText("")
+        self.keyTextArea.setText("")
+        self.valueTextArea.setText("")
 
     def json2dict(self, _jsontext):
         keyValue = ""
