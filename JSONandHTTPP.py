@@ -89,7 +89,7 @@ class BurpExtender(IBurpExtender, ITab):
         self._result = []
         # resultDict format: ["aa=bb","cc=ddd"]
         resultDict = self.json2dict(_jsontext)
-        self.dictTextArea.append("&".join(resultDict))
+        self.dictTextArea.append("\n".join(resultDict))
         keyList = set()
         valueList = set()
         for result in resultDict:
